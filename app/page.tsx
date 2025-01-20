@@ -13,6 +13,8 @@ export default function Home() {
   useEffect(() => {
     if (!companyId) {
       console.error("Company ID is missing from URL parameters")
+    }else {
+        console.log("companyId", companyId)
     }
   }, [companyId])
 
