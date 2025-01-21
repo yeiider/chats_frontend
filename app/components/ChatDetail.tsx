@@ -86,7 +86,7 @@ export default function ChatDetail({ companyId, contactPhone }: ChatDetailProps)
         <h2 className="text-2xl font-bold mb-4">
           Chat with {chatDetail.contact.displayName || chatDetail.contact.phone}
         </h2>
-        <div className="bg-white shadow-md rounded-lg p-4">
+        <div className="bg-white shadow-md rounded-lg p-4 max-h-[90vh] overflow-y-auto">
           <div className="mb-4">
             <p>
               <strong>Company:</strong> {chatDetail.companyAlias}
