@@ -72,7 +72,7 @@ export default function ChatList({ companyId, onSelectChat }: ChatListProps) {
                   <li
                       key={chat.chatId}
                       className="cursor-pointer p-2 hover:bg-gray-200 rounded"
-                      onClick={() => onSelectChat(chat.contactPhone)}
+                      onClick={() => onSelectChat(chat.chatId)}
                   >
                     <h3 className="font-semibold">{chat.displayName || chat.contactPhone}</h3>
                     <p className="text-sm text-gray-600">{format(new Date(chat.updatedAt), "dd/MM/yyyy HH:mm")}</p>

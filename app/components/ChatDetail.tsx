@@ -48,7 +48,6 @@ export default function ChatDetail({ companyId, contactPhone }: ChatDetailProps)
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                // Add any necessary authentication headers here
               },
             },
         )
