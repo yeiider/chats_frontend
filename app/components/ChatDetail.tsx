@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
+import { es } from "date-fns/locale"
 
 interface Message {
   messageId: string
@@ -59,9 +60,9 @@ export default function ChatDetail({ companyId, contactPhone }: ChatDetailProps)
       } catch (error) {
         console.error("Error fetching chat details:", error)
         if (error instanceof TypeError && error.message.includes("CORS")) {
-          setError("CORS error: Unable to access the chat server. Please contact support.")
+          setError("Error CORS: No se puede acceder al servidor de chat. Por favor, contacte con soporte.")
         } else {
-          setError("Failed to load chat details. Please try again later.")
+          setError("No se pudieron cargar los detalles del chat. Por favor, inténtelo de nuevo más tarde.")
         }
       }
     }
@@ -73,41 +74,49 @@ export default function ChatDetail({ companyId, contactPhone }: ChatDetailProps)
 
   if (!chatDetail) {
     return (
-        <>
-          {error && <div className="text-red-500 mb-4">{error}</div>}
-          <div>Loading chat details...</div>
-        </>
+        <div className="h-full flex items-center justify-center">
+          {error ? (
+              <div className="text-red-500 bg-red-100 p-4 rounded-md">{error}</div>
+          ) : (
+              <div className="text-gray-500">Cargando detalles del chat...</div>
+          )}
+        </div>
     )
   }
 
   return (
-      <div className="max-w-4xl mx-auto">
-        {error && <div className="text-red-500 mb-4">{error}</div>}
-        <h2 className="text-2xl font-bold mb-4">
-          Chat with {chatDetail.contact.displayName || chatDetail.contact.phone}
-        </h2>
-        <div className="bg-white shadow-md rounded-lg p-4 max-h-[90vh] overflow-y-auto">
-          <div className="mb-4">
-            <p>
-              <strong>Company:</strong> {chatDetail.companyAlias}
-            </p>
-            <p>
-              <strong>Company Phone:</strong> {chatDetail.companyPhone}
-            </p>
-          </div>
-          <div className="space-y-4">
-            {chatDetail.messages.map((message) => (
+      <div className="h-full flex flex-col bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-gray-800 text-white p-4">
+          <h2 className="text-xl font-semibold">Chat con {chatDetail.contact.displayName || chatDetail.contact.phone}</h2>
+          <p className="text-sm text-gray-300 mt-1">
+            Empresa: {chatDetail.companyAlias} | Teléfono: {chatDetail.companyPhone}
+          </p>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {chatDetail.messages.map((message) => (
+              <div key={message.messageId} className={`flex ${message.role === "human" ? "justify-end" : "justify-start"}`}>
                 <div
-                    key={message.messageId}
-                    className={`p-3 rounded-lg ${
-                        message.role === "human" ? "bg-blue-100 ml-auto" : "bg-gray-100"
-                    } max-w-[70%]`}
+                    className={`p-3 rounded-lg max-w-[70%] ${
+                        message.role === "human" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                    }`}
                 >
                   <p>{message.body}</p>
-                  <p className="text-xs text-gray-500 mt-1">{format(new Date(message.date), "dd/MM/yyyy HH:mm:ss")}</p>
+                  <p className="text-xs mt-1 opacity-75">
+                    {format(new Date(message.date), "d 'de' MMMM 'a las' HH:mm", { locale: es })}
+                  </p>
                 </div>
-            ))}
-          </div>
+              </div>
+          ))}
+        </div>
+        <div className="border-t border-gray-200 p-4">
+          <form className="flex space-x-2">
+            <input
+                type="text"
+                placeholder="Escribe un mensaje..."
+                className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+          </form>
         </div>
       </div>
   )
