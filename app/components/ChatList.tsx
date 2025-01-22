@@ -32,33 +32,45 @@ export default function ChatList({ companyId, onSelectChat }: ChatListProps) {
               headers: {
                 "Content-Type": "application/json",
               },
-            },
-        )
+            }
+        );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json()
-        setChats(data)
+        const data = await response.json();
+
+        // Ordena los chats por updatedAt en orden descendente
+        const sortedChats = data.sort(
+            (a: Chat, b: Chat) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+
+        setChats(sortedChats);
       } catch (error) {
-        console.error("Error fetching chats:", error)
+        console.error("Error fetching chats:", error);
         if (error instanceof TypeError && error.message.includes("CORS")) {
-          setError("Error CORS: No se puede acceder al servidor de chat. Por favor, contacte con soporte.")
+          setError(
+              "Error CORS: No se puede acceder al servidor de chat. Por favor, contacte con soporte."
+          );
         } else {
-          setError("No se pudieron cargar los chats. Por favor, inténtelo de nuevo más tarde.")
+          setError(
+              "No se pudieron cargar los chats. Por favor, inténtelo de nuevo más tarde."
+          );
         }
-        setChats([])
+        setChats([]);
       }
-    }
+    };
 
     if (companyId) {
       fetchChats().catch((err) => {
-        console.error("Failed to fetch chats:", err)
-        setError("No se pudieron cargar los chats. Por favor, inténtelo de nuevo más tarde.")
-      })
+        console.error("Failed to fetch chats:", err);
+        setError(
+            "No se pudieron cargar los chats. Por favor, inténtelo de nuevo más tarde."
+        );
+      });
     }
-  }, [companyId])
+  }, [companyId]);
 
   return (
       <aside className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
